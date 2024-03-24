@@ -1,0 +1,13 @@
+spring:
+  activemq:
+    broker-url: tcp://1.94.136.58:61616  #activeMQ的ip和端口号
+    user: admin   #activeMq账号
+    password: admin #activeMq密码
+    queue-name: active.queue #消息队列
+    topic-name: active.topic #消息广播
+    pool:
+      enabled: true       #连接池启动
+      max-connections: 10 #最大连接数
+    #本地开发关闭jms
+    jms:
+      enable: true
