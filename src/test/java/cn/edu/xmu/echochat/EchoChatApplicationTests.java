@@ -15,7 +15,7 @@ class EchoChatApplicationTests {
     void test() {
 //        System.out.println("1");
         sender.sendQueue("测试queue");
-        sender.sendTopic("测试topic");
+//        sender.sendTopic("测试topic");
     }
 
 }
