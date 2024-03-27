@@ -22,20 +22,18 @@ public class Sender {
     @Autowired
     private Topic topic;
 
-    public void sendQueue(String message) {
-        System.out.println(String.format("activeMq 使用 queue 模式发送消息：%s", message));
+    public void sendQueue(Msg message) {
+        System.out.println(String.format("activeMq 使用 queue 模式发送消息：%s", message.toString()));
         sendMessage(queue, message);
     }
 
-    public void sendTopic(String message) {
-        System.out.println(String.format("activeMq 使用 topic 模式发送消息：%s", message));
+    public void sendTopic(Msg message) {
+        System.out.println(String.format("activeMq 使用 topic 模式发送消息：%s", message.toString()));
         sendMessage(topic, message);
     }
 
-    // 发送消息，destination是发送到的队列，message是待发送的消息
-    private void sendMessage(Destination destination, String message) {
+    private void sendMessage(Destination destination, Msg message) {
         jmsMessagingTemplate.convertAndSend(destination, message);
     }
-
 }
 

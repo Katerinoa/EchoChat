@@ -4,19 +4,46 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
+import javax.swing.text.MaskFormatter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 @Component
 @ConditionalOnProperty(prefix = "spring.activemq.jms", name = "enable", havingValue = "true")
 public class Receiver {
 
     @JmsListener(destination = "${spring.activemq.queue-name}", containerFactory = "queueListener")
-    public void readActiveQueue(String message) throws Exception {
-        System.out.println(String.format("activeMq 使用 queue 模式接收到消息：%s", message));
+    public void readActiveQueue(Msg message) throws Exception {
+        System.out.println(String.format("activeMq 使用 queue 模式接收到消息：%s", message.toString()));
+        if (message.getMessageType() == 1) {
+            try {
+                storeFile(message.getFileContent());
+                System.out.println("存储成功");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @JmsListener(destination = "${spring.activemq.topic-name}", containerFactory = "topicListener")
-    public void readActiveTopic(String message) throws Exception {
-        System.out.println(String.format("activeMq 使用 topic 模式接收到消息：%s", message));
+    public void readActiveTopic(Msg message) throws Exception {
+        System.out.println(String.format("activeMq 使用 topic 模式接收到消息：%s", message.toString()));
+        if (message.getMessageType() == 1) {
+            try {
+                storeFile(message.getFileContent());
+                System.out.println("存储成功");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+    private void storeFile(byte[] fileContent) throws IOException {
+        String filePath = "src/main/resources/file.txt";
+        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+            outputStream.write(fileContent);
+        }
+    }
 }
 
