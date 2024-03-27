@@ -32,6 +32,7 @@ class EchoChatApplicationTests {
         messageFile.setSenderId(0L);
         messageFile.setReceiverId(0L);
         messageFile.setMessageType((byte) 1);
+        messageFile.setFileType(filePath.substring(filePath.lastIndexOf('.') + 1));
         messageFile.setFileContent(Files.readAllBytes(Path.of(filePath)));
         sender.sendQueue(messageFile);
 

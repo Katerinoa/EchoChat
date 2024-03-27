@@ -21,9 +21,9 @@ public class CustomMessageConverter implements MessageConverter {
             bytesMessage.setLongProperty("receiverId", msg.getReceiverId());
             bytesMessage.setByteProperty("messageType", msg.getMessageType());
             bytesMessage.setStringProperty("content", msg.getContent());
+            bytesMessage.setStringProperty("fileType", msg.getFileType());
             if (msg.getFileContent() != null)
                 bytesMessage.writeBytes(msg.getFileContent());
-//            bytesMessage.setLongProperty("sentAt", msg.getSentAt().toEpochSecond());
             return bytesMessage;
         } else {
             throw new MessageConversionException("Unsupported message type: " + object.getClass());
@@ -40,11 +40,10 @@ public class CustomMessageConverter implements MessageConverter {
             msg.setReceiverId(bytesMessage.getLongProperty("receiverId"));
             msg.setMessageType(bytesMessage.getByteProperty("messageType"));
             msg.setContent(bytesMessage.getStringProperty("content"));
+            msg.setFileType(bytesMessage.getStringProperty("fileType"));
             byte[] fileContent = new byte[(int) bytesMessage.getBodyLength()];
             bytesMessage.readBytes(fileContent);
             msg.setFileContent(fileContent);
-//            long sentAt = bytesMessage.getLongProperty("sentAt");
-//            msg.setSentAt(LocalDateTime.ofEpochSecond(sentAt, 0, ZoneOffset.UTC));
             return msg;
         } else {
             throw new MessageConversionException("Unsupported message type: " + message.getClass());
