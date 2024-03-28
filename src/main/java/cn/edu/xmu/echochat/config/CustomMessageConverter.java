@@ -16,9 +16,6 @@ public class CustomMessageConverter implements MessageConverter {
         if (object instanceof Msg) {
             Msg msg = (Msg) object;
             BytesMessage bytesMessage = session.createBytesMessage();
-            bytesMessage.setLongProperty("id", msg.getId());
-            bytesMessage.setLongProperty("senderId", msg.getSenderId());
-            bytesMessage.setLongProperty("receiverId", msg.getReceiverId());
             bytesMessage.setByteProperty("messageType", msg.getMessageType());
             bytesMessage.setStringProperty("content", msg.getContent());
             bytesMessage.setStringProperty("fileType", msg.getFileType());
@@ -35,9 +32,6 @@ public class CustomMessageConverter implements MessageConverter {
         if (message instanceof BytesMessage) {
             BytesMessage bytesMessage = (BytesMessage) message;
             Msg msg = new Msg();
-            msg.setId(bytesMessage.getLongProperty("id"));
-            msg.setSenderId(bytesMessage.getLongProperty("senderId"));
-            msg.setReceiverId(bytesMessage.getLongProperty("receiverId"));
             msg.setMessageType(bytesMessage.getByteProperty("messageType"));
             msg.setContent(bytesMessage.getStringProperty("content"));
             msg.setFileType(bytesMessage.getStringProperty("fileType"));

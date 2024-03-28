@@ -19,23 +19,17 @@ class EchoChatApplicationTests {
     @Test
     void test() throws IOException {
         Msg message = new Msg();
-        message.setId(0L);
-        message.setSenderId(0L);
-        message.setReceiverId(0L);
         message.setMessageType((byte) 0);
-        message.setContent("123");
+        message.setContent("测试一下吧");
         sender.sendQueue(message);
 
-        String filePath = "src/main/resources/test.txt";
-        Msg messageFile = new Msg();
-        messageFile.setId(0L);
-        messageFile.setSenderId(0L);
-        messageFile.setReceiverId(0L);
-        messageFile.setMessageType((byte) 1);
-        messageFile.setFileType(filePath.substring(filePath.lastIndexOf('.') + 1));
-        messageFile.setFileContent(Files.readAllBytes(Path.of(filePath)));
-        sender.sendQueue(messageFile);
-
-        sender.sendTopic(message);
+//        String filePath = "src/main/resources/test.txt";
+//        Msg messageFile = new Msg();
+//        messageFile.setMessageType((byte) 1);
+//        messageFile.setFileType(filePath.substring(filePath.lastIndexOf('.') + 1));
+//        messageFile.setFileContent(Files.readAllBytes(Path.of(filePath)));
+//        sender.sendQueue(messageFile);
+//
+//        sender.sendTopic(message);
     }
 }

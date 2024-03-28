@@ -11,7 +11,7 @@ import java.io.IOException;
 @ConditionalOnProperty(prefix = "spring.activemq.jms", name = "enable", havingValue = "true")
 public class Receiver {
 
-    @JmsListener(destination = "${spring.activemq.queue-name}", containerFactory = "queueListener")
+    @JmsListener(destination = "${spring.activemq.receiever-queue}", containerFactory = "queueListener")
     public void readActiveQueue(Msg message) throws Exception {
         System.out.println(String.format("activeMq 使用 queue 模式接收到消息：%s", message.toString()));
         if (message.getMessageType() == 1) {
