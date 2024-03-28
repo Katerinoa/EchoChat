@@ -23,12 +23,10 @@ public class Sender {
     private Topic topic;
 
     public void sendQueue(Msg message) {
-        System.out.println(String.format("activeMq 使用 queue 模式发送消息：%s", message.toString()));
         sendMessage(queue, message);
     }
 
     public void sendTopic(Msg message) {
-        System.out.println(String.format("activeMq 使用 topic 模式发送消息：%s", message.toString()));
         sendMessage(topic, message);
     }
 

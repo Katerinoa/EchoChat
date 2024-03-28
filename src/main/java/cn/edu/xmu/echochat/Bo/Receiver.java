@@ -11,9 +11,9 @@ import java.io.IOException;
 @ConditionalOnProperty(prefix = "spring.activemq.jms", name = "enable", havingValue = "true")
 public class Receiver {
 
-    @JmsListener(destination = "${spring.activemq.receiever-queue}", containerFactory = "queueListener")
+    @JmsListener(destination = "${spring.activemq.receiver-queue}", containerFactory = "queueListener")
     public void readActiveQueue(Msg message) throws Exception {
-        System.out.println(String.format("activeMq 使用 queue 模式接收到消息：%s", message.toString()));
+        System.out.println(String.format("\n收到私聊消息：%s", message.getContent().toString()));
         if (message.getMessageType() == 1) {
             try {
                 storeFile(message.getFileContent(), message.getFileType());
@@ -26,7 +26,7 @@ public class Receiver {
 
     @JmsListener(destination = "${spring.activemq.topic-name}", containerFactory = "topicListener")
     public void readActiveTopic(Msg message) throws Exception {
-        System.out.println(String.format("activeMq 使用 topic 模式接收到消息：%s", message.toString()));
+        System.out.println(String.format("\n收到群发消息：%s", message.getContent().toString()));
         if (message.getMessageType() == 1) {
             try {
                 storeFile(message.getFileContent(), message.getFileType());

@@ -5,7 +5,7 @@ spring:
     password: admin #activeMq密码
     queue-name: tt #消息队列
     topic-name: active.topic #消息广播
-    receiever-queue: Lirui
+    receiver-queue: Lirui
     pool:
       enabled: true       #连接池启动
       max-connections: 10 #最大连接数
