@@ -9,6 +9,8 @@ import jakarta.jms.JMSException;
 import jakarta.jms.Message;
 import jakarta.jms.Session;
 
+import java.time.LocalDateTime;
+
 public class CustomMessageConverter implements MessageConverter {
 
     @Override
@@ -17,10 +19,13 @@ public class CustomMessageConverter implements MessageConverter {
             Msg msg = (Msg) object;
             BytesMessage bytesMessage = session.createBytesMessage();
             bytesMessage.setByteProperty("messageType", msg.getMessageType());
-            bytesMessage.setStringProperty("content", msg.getContent());
-            bytesMessage.setStringProperty("fileType", msg.getFileType());
-            if (msg.getFileContent() != null)
-                bytesMessage.writeBytes(msg.getFileContent());
+            bytesMessage.setStringProperty("messageName", msg.getMessageName());
+            bytesMessage.setStringProperty("sender", msg.getSender());
+            bytesMessage.setStringProperty("receiver", msg.getReceiver());
+            bytesMessage.setByteProperty("receiverType", msg.getReceiverType());
+            bytesMessage.setStringProperty("sentAt", msg.getSentAt().toString());
+            if (msg.getContent() != null)
+                bytesMessage.writeBytes(msg.getContent());
             return bytesMessage;
         } else {
             throw new MessageConversionException("Unsupported message type: " + object.getClass());
@@ -33,11 +38,14 @@ public class CustomMessageConverter implements MessageConverter {
             BytesMessage bytesMessage = (BytesMessage) message;
             Msg msg = new Msg();
             msg.setMessageType(bytesMessage.getByteProperty("messageType"));
-            msg.setContent(bytesMessage.getStringProperty("content"));
-            msg.setFileType(bytesMessage.getStringProperty("fileType"));
-            byte[] fileContent = new byte[(int) bytesMessage.getBodyLength()];
-            bytesMessage.readBytes(fileContent);
-            msg.setFileContent(fileContent);
+            msg.setMessageName(bytesMessage.getStringProperty("messageName"));
+            msg.setSender(bytesMessage.getStringProperty("sender"));
+            msg.setReceiver(bytesMessage.getStringProperty("receiver"));
+            msg.setReceiverType(bytesMessage.getByteProperty("receiverType"));
+            msg.setSentAt(LocalDateTime.parse(bytesMessage.getStringProperty("sentAt")));
+            byte[] content = new byte[(int) bytesMessage.getBodyLength()];
+            bytesMessage.readBytes(content);
+            msg.setContent(content);
             return msg;
         } else {
             throw new MessageConversionException("Unsupported message type: " + message.getClass());

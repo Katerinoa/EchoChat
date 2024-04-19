@@ -21,6 +21,8 @@ public class Msg {
 
     private String receiver;
 
+    private Byte receiverType; // 0-个人，1-群聊
+
     private LocalDateTime sentAt;
 
     public Long getId() {
@@ -69,6 +71,14 @@ public class Msg {
 
     public void setReceiver(String receiver) {
         this.receiver = receiver;
+    }
+
+    public Byte getReceiverType() {
+        return receiverType;
+    }
+
+    public void setReceiverType(Byte receiverType) {
+        this.receiverType = receiverType;
     }
 
     public LocalDateTime getSentAt() {

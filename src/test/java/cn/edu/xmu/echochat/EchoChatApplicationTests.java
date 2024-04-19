@@ -13,15 +13,15 @@ import java.nio.file.Path;
 @SpringBootTest
 class EchoChatApplicationTests {
 
-    @Resource
-    private Sender sender;
-
-    @Test
-    void test() throws IOException {
-        Msg message = new Msg();
-        message.setMessageType((byte) 0);
-        message.setContent("测试一下吧");
-        sender.sendQueue(message);
+//    @Resource
+//    private Sender sender;
+//
+//    @Test
+//    void test() throws IOException {
+//        Msg message = new Msg();
+//        message.setMessageType((byte) 0);
+//        message.setContent("测试一下吧");
+//        sender.sendQueue(message);
 
 //        String filePath = "src/main/resources/test.txt";
 //        Msg messageFile = new Msg();
