@@ -1,3 +1,5 @@
+server.port: 8080
+
 spring:
   activemq:
     broker-url: tcp://1.94.136.58:61616  #activeMQ的ip和端口号
@@ -17,3 +19,14 @@ spring:
     appid: 20240407002016334
     key: T52E3n0ecEB7Jdo4RQ0i
     url: https://fanyi-api.baidu.com/api/trans/vip/translate
+
+  datasource:
+    url: jdbc:mysql://1.94.12.85:3306/chat
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update

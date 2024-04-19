@@ -1,5 +1,6 @@
 package cn.edu.xmu.echochat.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.apache.activemq.command.ActiveMQTopic;
@@ -15,6 +16,7 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.Queue;
 import jakarta.jms.Topic;
 
+@Slf4j
 @Configuration
 @ConditionalOnProperty(prefix = "spring.activemq.jms", name = "enable", havingValue = "true")
 public class ActiveMQConfig {
@@ -28,22 +30,13 @@ public class ActiveMQConfig {
     @Value("${spring.activemq.password}")
     private String password;
 
-    @Value("${spring.activemq.queue-name}")
-    private String queueName;
-
-    @Value("${spring.activemq.topic-name}")
-    private String topicName;
-
-
-    @Bean
-    public Queue queue() {
-        System.out.println("创建消息队列queue：" + queueName);
+    public Queue queue(String queueName) {
+        log.info("queue created：" + queueName);
         return new ActiveMQQueue(queueName);
     }
 
-    @Bean
-    public Topic topic() {
-        System.out.println("创建主题topic：" + topicName);
+    public Topic topic(String topicName) {
+        log.info("topic created：" + topicName);
         return new ActiveMQTopic(topicName);
     }
 
