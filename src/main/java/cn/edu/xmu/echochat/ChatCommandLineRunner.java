@@ -28,7 +28,7 @@ public class ChatCommandLineRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         try (Scanner scanner = new Scanner(System.in)) {
             while (true) {
-                System.out.println("请输入消息类型（0-文本，1-文件）:");
+                System.out.println("请输入消息类型（0-文本，1-文件， 2-文本翻译）:");
                 byte messageType = scanner.nextByte();
                 scanner.nextLine(); // 清除换行符
 
@@ -45,11 +45,17 @@ public class ChatCommandLineRunner implements CommandLineRunner {
                     System.out.println("文件消息暂不支持通过命令行发送。");
                 } else if (messageType == 2) {
                     // 文本翻译
+                    System.out.println("中译英（1），英译中（2）：");
+                    String op = scanner.nextLine();
                     System.out.println("请输入需要翻译内容:");
                     String content = scanner.nextLine();
-
-                    String to = translation.translate(content);
-
+                    String to;
+                    if (op.equals("1")) {
+                        to = translation.translate(content, 1);
+                    }
+                    else {
+                        to = translation.translate(content, 2);
+                    }
                     System.out.println(to);
                 }
             }

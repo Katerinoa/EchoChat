@@ -32,14 +32,19 @@ public class Translation {
     @Value("${spring.Baidu.url}")
     private String url;
 
-    public String translate(String content) {
+    public String translate(String content, Integer op) {
         Random random = new Random(10);
         String salt = Integer.toString(random.nextInt());
         String sign = DigestUtils.md5DigestAsHex((appid + content + salt + key).getBytes());
 
-        String from = "zh";
-        String to = "en";
-
+        String from = "", to = "";
+        if (op == 1) {
+            from = "zh";
+            to = "en";
+        } else if (op == 2) {
+            from = "en";
+            to = "zh";
+        }
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<>();
         paramMap.add("q",content);
         paramMap.add("from", from);
