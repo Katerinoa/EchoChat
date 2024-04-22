@@ -1,5 +1,6 @@
 package cn.edu.xmu.echochat.ws;
 
+import cn.edu.xmu.echochat.Bo.ApplicationContextProvider;
 import cn.edu.xmu.echochat.Bo.Msg;
 import cn.edu.xmu.echochat.Bo.OnlineUser;
 import cn.edu.xmu.echochat.Bo.User;
@@ -18,6 +19,8 @@ import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.connection.SingleConnectionFactory;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Component;
@@ -29,6 +32,7 @@ import java.io.IOException;
 @Component
 public class WebsocketServer {
     private JmsMessagingTemplate jmsMessagingTemplate;
+    private ApplicationContext context;
 
     private Session session;
     private String username;
@@ -44,11 +48,12 @@ public class WebsocketServer {
         this.password = password;
         this.session = session;
         this.jmsMessagingTemplate = SpringContextUtil.getBean(JmsMessagingTemplate.class);
+        context = ApplicationContextProvider.getContext();
 
         User user = this.userPoMapper.findByUsernameAndPassword(username, password);
         if (user != null) {
             log.info("login success: " + this.username);
-            this.onlineUser = new OnlineUser(session, user.getId(), jmsMessagingTemplate);
+            this.onlineUser = new OnlineUser(session, user.getId(), jmsMessagingTemplate, (JmsListenerContainerFactory<?>) context.getBean("queueListener"));
         } else {
             log.info("failed matching: " + this.username);
             session.close();
