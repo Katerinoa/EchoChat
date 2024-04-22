@@ -4,6 +4,7 @@ import cn.edu.xmu.echochat.Bo.Msg;
 import cn.edu.xmu.echochat.Bo.OnlineUser;
 import cn.edu.xmu.echochat.Bo.User;
 import cn.edu.xmu.echochat.Mapper.UserPoMapper;
+import cn.edu.xmu.echochat.config.SpringContextUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,6 +29,7 @@ import java.io.IOException;
 @Component
 public class WebsocketServer {
     private JmsMessagingTemplate jmsMessagingTemplate;
+
     private Session session;
     private String username;
     private String password;
@@ -41,8 +43,7 @@ public class WebsocketServer {
         this.username = username;
         this.password = password;
         this.session = session;
-
-        this.jmsMessagingTemplate = new JmsMessagingTemplate(new SingleConnectionFactory());
+        this.jmsMessagingTemplate = SpringContextUtil.getBean(JmsMessagingTemplate.class);
 
         User user = this.userPoMapper.findByUsernameAndPassword(username, password);
         if (user != null) {
