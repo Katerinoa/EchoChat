@@ -13,13 +13,12 @@ import jakarta.websocket.Session;
 import jakarta.websocket.server.PathParam;
 import jakarta.websocket.server.ServerEndpoint;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.connection.SingleConnectionFactory;
 import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+
 
 @Slf4j
 @ServerEndpoint("/chat/{username}/{password}")
@@ -42,7 +41,7 @@ public class WebsocketServer {
 
         this.jmsMessagingTemplate = new JmsMessagingTemplate(new SingleConnectionFactory());
 
-        User user = this.userPoMapper.findByUsernameAndPassword(username, password);
+        User user = userPoMapper.findByUsernameAndPassword(username, password);
         if (user != null) {
             log.info("login success: " + this.username);
             this.onlineUser = new OnlineUser(session, user.getId(), jmsMessagingTemplate);
@@ -58,7 +57,7 @@ public class WebsocketServer {
 
         ObjectMapper objectMapper = new ObjectMapper();
         Msg msg = objectMapper.readValue(message, Msg.class);
-        User receiver = this.userPoMapper.findByUsername(msg.getReceiver());
+        User receiver = userPoMapper.findByUsername(msg.getReceiver());
         if (msg.getReceiverType() == 0) {
             this.onlineUser.sendQueue(receiver.getId(), msg);
         }

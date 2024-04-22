@@ -1,5 +1,8 @@
 package cn.edu.xmu.echochat.config;
 
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.Queue;
+import jakarta.jms.Topic;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
@@ -11,10 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.support.converter.MessageConverter;
-
-import jakarta.jms.ConnectionFactory;
-import jakarta.jms.Queue;
-import jakarta.jms.Topic;
 
 import java.util.HashMap;
 import java.util.Map;

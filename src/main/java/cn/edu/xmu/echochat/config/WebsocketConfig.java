@@ -1,6 +1,7 @@
-package cn.edu.xmu.echochat.ws;
+package cn.edu.xmu.echochat.config;
 
 import cn.edu.xmu.echochat.Mapper.UserPoMapper;
+import cn.edu.xmu.echochat.ws.WebsocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
