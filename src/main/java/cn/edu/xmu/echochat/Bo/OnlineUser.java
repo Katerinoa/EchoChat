@@ -4,13 +4,16 @@ import cn.edu.xmu.echochat.config.ActiveMQConfig;
 import cn.edu.xmu.echochat.config.CustomMessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.jms.Destination;
 import jakarta.jms.Queue;
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.config.JmsListenerContainerFactory;
 import org.springframework.jms.config.SimpleJmsListenerEndpoint;
@@ -18,6 +21,8 @@ import org.springframework.jms.config.JmsListenerEndpointRegistry;
 import org.springframework.jms.core.JmsMessagingTemplate;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @ConditionalOnProperty(prefix = "spring.activemq.jms", name = "enable", havingValue = "true")
@@ -33,6 +38,7 @@ public class OnlineUser {
     private Queue queue;
 
     private String queueName;
+
     private ObjectMapper objectMapper;
 
     public OnlineUser(Session session, Long userId, JmsMessagingTemplate jmsMessagingTemplate, JmsListenerContainerFactory<?> factory) {
@@ -41,6 +47,19 @@ public class OnlineUser {
         this.queue = ActiveMQConfig.queue(queueName);
         this.jmsMessagingTemplate = jmsMessagingTemplate;
         this.factory = factory;
+        objectMapper = new ObjectMapper();
+        // 添加Java 8时间模块并定义LocalDateTime的序列化格式
+        JavaTimeModule timeModule = new JavaTimeModule();
+        timeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        objectMapper.registerModule(timeModule);
+
+        // 配置ObjectMapper序列化byte[]为JSON数组
+        SimpleModule byteModule = new SimpleModule();
+        byteModule.addSerializer(byte[].class, new ByteArraySerializer());
+        objectMapper.registerModule(byteModule);
+
+        // 禁用日期时间为时间戳的特性
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         addQueueListener();
     }
 
@@ -74,9 +93,8 @@ public class OnlineUser {
     }
 
     public void readActiveQueue(Msg message) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        session.getBasicRemote().sendText(objectMapper.writeValueAsString(message));
+        String str = objectMapper.writeValueAsString(message);
+        session.getBasicRemote().sendText(str);
     }
 
     public String getQueueName() {
