@@ -23,6 +23,7 @@ public class OnlineUser {
     private Queue queue;
 
     private String queueName;
+    private ObjectMapper objectMapper;
 
     public OnlineUser(Session session, Long userId, JmsMessagingTemplate jmsMessagingTemplate) {
         this.session = session;

@@ -6,6 +6,8 @@ import cn.edu.xmu.echochat.Bo.User;
 import cn.edu.xmu.echochat.Mapper.UserPoMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.websocket.OnClose;
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
@@ -57,6 +59,8 @@ public class WebsocketServer {
         log.info(message);
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Msg msg = objectMapper.readValue(message, Msg.class);
         User receiver = this.userPoMapper.findByUsername(msg.getReceiver());
         if (msg.getReceiverType() == 0) {
