@@ -35,8 +35,8 @@ public class WebsocketServer {
     private ApplicationContext context;
 
     private Session session;
-    private OnlineUser onlineUser;
 
+    private OnlineUser onlineUser;
     public static UserPoMapper userPoMapper;
     public static UserGroupPoMapper userGroupPoMapper;
 
@@ -52,7 +52,7 @@ public class WebsocketServer {
 
         if (user != null) {
             log.info("login success: " + username);
-            this.onlineUser = new OnlineUser(session, user.getId(), jmsMessagingTemplate, (JmsListenerContainerFactory<?>) context.getBean("queueListener"), (JmsListenerContainerFactory<?>) context.getBean("topicListener"));
+            this.onlineUser = new OnlineUser(session, user.getId(), userGroupList, jmsMessagingTemplate, (JmsListenerContainerFactory<?>) context.getBean("queueListener"), (JmsListenerContainerFactory<?>) context.getBean("topicListener"));
         } else {
             log.info("failed matching: " + username);
             session.close();
