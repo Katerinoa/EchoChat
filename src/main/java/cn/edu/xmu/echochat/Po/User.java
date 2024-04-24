@@ -1,4 +1,4 @@
-package cn.edu.xmu.echochat.Bo;
+package cn.edu.xmu.echochat.Po;
 
 import jakarta.persistence.*;
 

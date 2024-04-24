@@ -1,5 +1,7 @@
 package cn.edu.xmu.echochat.Bo;
 
+import cn.edu.xmu.echochat.Mapper.UserGroupUserPoMapper;
+import cn.edu.xmu.echochat.Po.Msg;
 import cn.edu.xmu.echochat.config.ActiveMQConfig;
 import cn.edu.xmu.echochat.config.CustomMessageConverter;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,44 +11,41 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.jms.Destination;
 import jakarta.jms.Queue;
+import jakarta.jms.Topic;
 import jakarta.websocket.Session;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.config.JmsListenerContainerFactory;
-import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 import org.springframework.jms.config.JmsListenerEndpointRegistry;
+import org.springframework.jms.config.SimpleJmsListenerEndpoint;
 import org.springframework.jms.core.JmsMessagingTemplate;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Slf4j
 @ConditionalOnProperty(prefix = "spring.activemq.jms", name = "enable", havingValue = "true")
 public class OnlineUser {
 
     private JmsListenerEndpointRegistry registry;
-    JmsListenerContainerFactory<?> factory;
-
+    JmsListenerContainerFactory<?> queueFactory;
+    JmsListenerContainerFactory<?> topicFactory;
     private JmsMessagingTemplate jmsMessagingTemplate;
 
     private Session session;
-
     private Queue queue;
-
     private String queueName;
-
+    private List<String> topicName;
     private ObjectMapper objectMapper;
 
-    public OnlineUser(Session session, Long userId, JmsMessagingTemplate jmsMessagingTemplate, JmsListenerContainerFactory<?> factory) {
+    public OnlineUser(Session session, Long userId, JmsMessagingTemplate jmsMessagingTemplate, JmsListenerContainerFactory<?> queueFactory, JmsListenerContainerFactory<?> topicFactory) {
         this.session = session;
         this.queueName = 'u' + userId.toString();
         this.queue = ActiveMQConfig.queue(queueName);
         this.jmsMessagingTemplate = jmsMessagingTemplate;
-        this.factory = factory;
+        this.queueFactory = queueFactory;
         objectMapper = new ObjectMapper();
         // 添加Java 8时间模块并定义LocalDateTime的序列化格式
         JavaTimeModule timeModule = new JavaTimeModule();
@@ -61,6 +60,7 @@ public class OnlineUser {
         // 禁用日期时间为时间戳的特性
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         addQueueListener();
+        addTopicListener();
     }
 
     private void addQueueListener() {
@@ -80,11 +80,36 @@ public class OnlineUser {
             }
         });
 
-        registry.registerListenerContainer(endpoint, factory, true);
+        registry.registerListenerContainer(endpoint, queueFactory, true);
+    }
+
+    private void addTopicListener() {
+//        CustomMessageConverter customMessageConverter = new CustomMessageConverter();
+//        registry = new JmsListenerEndpointRegistry();
+//        SimpleJmsListenerEndpoint endpoint = new SimpleJmsListenerEndpoint();
+//        endpoint.setId(topic + "Endpoint");
+//        endpoint.setDestination(queueName);
+//        endpoint.setMessageListener(message -> {
+//            try {
+//                Msg msg = (Msg) customMessageConverter.fromMessage(message);
+//                if (msg instanceof Msg) {   // 根据实际情况进行类型转换和判断
+//                    readActiveQueue(msg);
+//                }
+//            } catch (Exception e) {
+//                log.error("处理消息时发生错误", e);
+//            }
+//        });
+//
+//        registry.registerListenerContainer(endpoint, topicFactory, true);
     }
 
     public void sendQueue(Long receiverId, Msg message) {
         Queue receiverQueue = ActiveMQConfig.queue('u' + receiverId.toString());
+        sendMessage(receiverQueue, message);
+    }
+
+    public void sendTopic(Long groupId, Msg message) {
+        Topic receiverQueue = ActiveMQConfig.topic('g' + groupId.toString());
         sendMessage(receiverQueue, message);
     }
 
@@ -97,7 +122,4 @@ public class OnlineUser {
         session.getBasicRemote().sendText(str);
     }
 
-    public String getQueueName() {
-        return this.queueName;
-    }
 }

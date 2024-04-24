@@ -3,7 +3,7 @@
 //import java.util.Random;
 //import java.util.Scanner;
 //
-//import cn.edu.xmu.echochat.Bo.Msg;
+//import cn.edu.xmu.echochat.Po.Msg;
 //import cn.edu.xmu.echochat.Bo.Sender;
 //import cn.edu.xmu.echochat.Bo.Translation;
 //import org.springframework.beans.factory.annotation.Autowired;

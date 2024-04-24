@@ -1,5 +1,7 @@
 package cn.edu.xmu.echochat.config;
 
+import cn.edu.xmu.echochat.Mapper.UserGroupPoMapper;
+import cn.edu.xmu.echochat.Mapper.UserGroupUserPoMapper;
 import cn.edu.xmu.echochat.Mapper.UserPoMapper;
 import cn.edu.xmu.echochat.ws.WebsocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,8 @@ public class WebsocketConfig {
     }
 
     @Autowired
-    public void setUserPoMapper(UserPoMapper userPoMapper) {
+    public void setUserPoMapper(UserPoMapper userPoMapper, UserGroupPoMapper userGroupPoMapper, UserGroupUserPoMapper userGroupUserPoMapper) {
         WebsocketServer.userPoMapper = userPoMapper;
+        WebsocketServer.userGroupPoMapper = userGroupPoMapper;
     }
 }

@@ -1,6 +1,6 @@
 package cn.edu.xmu.echochat.config;
 
-import cn.edu.xmu.echochat.Bo.Msg;
+import cn.edu.xmu.echochat.Po.Msg;
 import jakarta.jms.BytesMessage;
 import jakarta.jms.JMSException;
 import jakarta.jms.Message;
